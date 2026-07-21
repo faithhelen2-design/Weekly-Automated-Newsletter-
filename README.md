@@ -1,157 +1,249 @@
-# AI-Powered Intelligent News Aggregation and Newsletter Generation System
-
-## 1. Project Overview
-
-### Project Title
-
-**AI-Powered Intelligent News Aggregation, Personalization, and Error Handling System using n8n**
-
-### Project Description
-
-This project is an advanced enhancement of an AI-powered automated workflow developed using n8n. The improved solution completely automates the lifecycle of news collection, data processing, content personalization, and error management using multiple specialized AI agents.
-
-Instead of relying on a single, fragile monolithic workflow, the system is divided into **three independent but interconnected workflows**. Each workflow is responsible for a specific stage of the data pipeline, significantly improving scalability, maintainability, fault tolerance, and modularity.
-
----
-
-## 2. Project Objectives
-
-The system is designed to achieve the following capabilities:
-
-* **Automated Collection:** Gather news dynamically from multiple online publications.
-* **Data Sanitization:** Clean and transform messy HTML, RSS, and JSON payloads into structured data.
-* **Centralized Storage:** Store extracted news in Google Sheets for downstream processing.
-* **Intelligent Personalization:** Tailor news content specifically to the target audience's preferences.
-* **AI Generation:** Draft professional, distribution-ready newsletters automatically.
-* **Automated Monitoring:** Instantly detect workflow and AI execution failures.
-* **Root-Cause Diagnosis:** Use AI to diagnose system errors and recommend clear fixes.
-* **High Availability:** Improve overall system reliability using AI model fallback mechanisms.
-
----
-
-## 3. System Architecture
-
-The solution architecture consists of three decoupled workflows acting as independent operational layers:
-
-```text
-                    +----------------+
-                    | Schedule Trigger|
-                    +-------+--------+
-                            |
-                            v
-              WORKFLOW 1 - DATA EXTRACTION
-                            |
-                            v
-                  Google Sheets Database
-                            |
-                            v
-              WORKFLOW 2 - CHIEF EDITOR
-                            |
-                            v
-                Personalized Newsletter
-                            |
-                            v
-                     Email Distribution
-
-        Any Workflow Failure
-                 |
-                 v
-          WORKFLOW 3 - ERROR HANDLER
-                 |
-                 v
-      Error Diagnosis + Recommended Fix
-```
-
-### 📋 Workflow 1: Data Extraction Workflow
-
-**Purpose:** Serves as the data ingestion layer. It collects news articles from multiple online publications, extracts the most crucial headlines, summarizes the articles using AI, and structures the data for storage.
-
-* **Inputs:** RSS feeds, raw HTML pages, and JSON responses.
-* **Monitored Sources:** *TechCabal, Nation Africa, Standard Media, Techweez, Smart Farmer, Kilimo News*.
-* **Fault Isolation:** Uses multiple HTTP Request nodes configured with `Continue on Error`, ensuring a single broken source layout does not interrupt the remaining extractions.
-
-#### Main Components:
-
-* **Schedule Trigger:** Automatically runs at designated intervals to kick off the extraction pipeline.
-* **HTTP Request Nodes:** Handles parallel, independent fetching to ensure strict error isolation across sources.
-* **AI Data Cleaning Agents:** Individualized AI Agents assigned to each news source to clean raw HTML, strip out advertisements/navigation menus, identify the core article, and output a concise summary.
-* **Structured Output Parser:** Standardizes the AI agent outputs into a unified JSON format:
-
-```json
-{
-  "source": "Source Name",
-  "headline": "Main Article Headline",
-  "summary": "Concise summary of the article content."
-}
-
-```
-
-* **Google Sheets Repository:** Appends the structured data using columns for *Date, Source, Headline, and Summary* to serve as the centralized processing database.
-
----
-
-### 📝 Workflow 2: Chief Editor Workflow
-
-**Purpose:** Transforms the raw, structured news repository into a highly personalized, human-reviewed newsletter.
-
-* **Inputs:** Activated automatically via a Google Sheets Trigger whenever new rows are appended.
-* **AI Editorial Agent:** Reads all compiled summaries, groups similar stories, strips duplicate data, and merges related articles into unified, coherent summaries to maximize readability.
-* **Audience Personalization:** A secondary AI agent formats the newsletter structure, refines the tone, and generates clean HTML optimized for email layout distribution based on target subscriber profiles.
-* **Human-in-the-Loop Approval:**
-> Before mass publication, the workflow generates a preview draft and emails it to a human editor, pausing execution. Once the editor clicks approval, the newsletter is instantly distributed to subscribers.
-
-
-
----
-
-### 🛠️ Workflow 3: AI Error Management Workflow
-
-**Purpose:** Monitors and mitigates operational exceptions or AI failures across the system.
-
-* **Trigger:** Webhook nodes capture failures instantly from Workflow 1 or Workflow 2.
-* **AI Error Analysis:** A dedicated troubleshooting agent analyzes the raw error logs to produce:
-* Error Summary & Root Cause
-* Actionable Recommended Solution
-* Priority Level & Prevention Strategy
-
-
-* **Structured Auditing:** Diagnostic data is logged back into a dedicated Google Sheet for developer review.
-* **Developer Notification:** Dispatches an immediate email containing the diagnostic breakdown to the engineering team for rapid debugging.
-
----
-
-## 4. AI & Technology Stack
-
-### AI Agent Architecture
-
-The system intentionally avoids a single general-purpose model, utilizing specialized agents to simplify prompt management and maintain output quality:
-
-| AI Agent | Core Responsibility |
-| --- | --- |
-| **Data Cleaner** | Sanitizes raw HTML/JSON and extracts clean, structured news tokens. |
-| **Chief Editor** | Dedupes, merges, summarizes, and personalizes daily news components. |
-| **Error Analyzer** | Automatically diagnoses workflow runtime failures and writes recommendations. |
-
-### Technologies Used
-
-* **n8n:** Workflow orchestration, node management, and automation logic.
-* **Google Sheets:** Centralized lightweight data storage and relational triggers.
-* **Mistral AI:** Primary Large Language Model (LLM) handling standard generation tasks.
-* **OpenRouter:** AI infrastructure layer providing seamless model fallback routing.
-* **Gmail / Webhooks:** Data distribution, human approval loops, and cross-workflow communications.
-
----
-
-## 5. Key Improvements Over Previous Iterations
-
-* **Modularity:** Transitioned from a single monolithic file into three independent micro-workflows.
-* **Performance:** Introduced parallel extraction architectures to handle multiple endpoints concurrently.
-* **Data Integrity:** Implemented localized AI cleaning layers to strip clutter before storage.
-* **Quality Assurance:** Integrated a mandatory Human-in-the-Loop step ensuring editorial oversight.
-* **Resilience:** Created a centralized AI-driven error handler paired with OpenRouter model fallback logic to isolate and self-diagnose system failures.
-
----
-
-## Conclusion
-
-This architecture demonstrates a production-ready approach to blending workflow automation with specialized artificial intelligence. By splitting core tasks into distinct pipelines for extraction, editorial synthesis, and automated error diagnostics, the system ensures a scalable, highly reliable, and self-correcting platform capable of delivering curated content with minimal manual overhead.
+Technical Documentation
+AI-Powered Intelligent News Aggregation, Personalization and Error Management System
+________________________________________
+1. Project Overview
+1.1 Project Title
+AI-Powered Intelligent News Aggregation, Personalization and Error Management System Using n8n and Artificial Intelligence
+________________________________________
+1.2 Project Description
+This capstone project is an enhanced version of a previously developed AI-powered news aggregation workflow. The improved system adopts a modular architecture consisting of three independent workflows that work together to automate the collection, processing, personalization, approval, and distribution of news content while providing intelligent error diagnosis.
+The solution combines workflow automation and artificial intelligence to transform raw news collected from multiple online publications into professionally formatted newsletters tailored to a specific audience. Unlike the previous implementation, this version introduces Human-in-the-Loop (HITL) approval before publication, AI model fallback mechanisms, and automated AI error diagnosis to improve reliability, maintainability, and scalability.
+________________________________________
+2. Project Objectives
+The project aims to:
+•	Automate the collection of news from multiple online news sources.
+•	Clean and summarize unstructured news content using Artificial Intelligence.
+•	Store structured news data in Google Sheets.
+•	Generate audience-specific newsletters using AI.
+•	Introduce human approval before newsletter publication.
+•	Automatically distribute approved newsletters via email.
+•	Detect AI workflow failures.
+•	Diagnose workflow failures and recommend corrective actions.
+•	Improve system reliability through AI fallback models.
+________________________________________
+3. System Architecture
+The solution is divided into three independent but interconnected workflows.
+Workflow 1 – Data Extraction Workflow
+↓
+Google Sheets Database
+↓
+Workflow 2 – Chief Editor Workflow
+↓
+Human Approval
+↓
+Newsletter Distribution
+↑
+Workflow 3 – Error Management Workflow
+The modular architecture allows each workflow to operate independently while exchanging data through Google Sheets and webhooks, improving maintainability and fault tolerance.
+________________________________________
+4. Workflow 1 – Data Extraction Workflow
+4.1 Purpose
+The Data Extraction Workflow is responsible for automatically collecting news from multiple Kenyan news websites, extracting the most important information using AI, and storing standardized summaries in Google Sheets.
+This workflow serves as the data ingestion layer of the entire system.
+________________________________________
+4.2 Workflow Process
+ 
+Step 1: Schedule Trigger
+The workflow starts automatically based on a predefined schedule.
+This eliminates the need for manual execution and ensures that news is collected consistently.
+ 
+________________________________________
+Step 2: Parallel Data Collection
+Multiple HTTP Request nodes simultaneously retrieve news content from different Kenyan news websites including:
+•	TechCabal
+ 
+•	Techweez
+ 
+•	Nation Africa
+ 
+•	Standard Media
+ 
+•	Smart Farmer Africa
+ 
+•	Kilimo News
+           
+Each source is processed independently. If one source becomes unavailable, the remaining sources continue processing without interruption.
+________________________________________
+Step 3: AI Data Cleaning
+Each HTTP Request node is paired with a dedicated AI Data Cleaning Agent.
+The AI agent performs the following tasks:
+•	Removes HTML tags.
+•	Removes advertisements.
+•	Removes navigation menus.
+•	Eliminates duplicate information.
+•	Identifies the main technology-related story.
+•	Extracts the headline.
+•	Generates a concise summary.
+•	Produces standardized JSON output.
+This ensures that all extracted news follows a consistent structure regardless of the original website.
+ 
+________________________________________
+Step 4: Structured Data Storage
+The cleaned information is stored in Google Sheets with the following fields:
+•	Date
+•	Source
+•	Headline
+•	Summary
+The spreadsheet acts as the central repository for the next workflow.
+ 
+________________________________________
+5. Workflow 2 – Chief Editor Workflow
+ 
+5.1 Purpose
+The Chief Editor Workflow transforms the structured news summaries into a professional newsletter tailored to the intended audience.
+Unlike the previous implementation, this workflow introduces editorial approval before publication and produces HTML-formatted newsletters suitable for email distribution.
+________________________________________
+5.2 Workflow Process
+Step 1: Google Sheets Trigger
+Whenever new records are added to Google Sheets, the workflow automatically starts.
+This ensures that newsletter generation begins immediately after new summaries become available.
+ 
+________________________________________
+Step 2: AI Editorial Processing
+The Chief Editor AI analyzes all incoming summaries and performs the following editorial tasks:
+•	Groups related stories under common topics.
+•	Combines multiple summaries discussing the same event.
+•	Removes duplicate information.
+•	Preserves all unique facts.
+•	Improves readability.
+•	Organizes information logically.
+•	Produces a professionally formatted HTML newsletter.
+The generated newsletter is optimized for email presentation and audience engagement.
+ 
+________________________________________
+Step 3: AI Context Memory
+A Simple Memory component maintains contextual information throughout the AI processing stage.
+This helps the AI generate consistent summaries and avoid repetitive content.
+ 
+________________________________________
+Step 4: AI Model Fallback
+The workflow implements two AI language models:
+Primary Model
+•	Mistral Cloud
+         
+Fallback Model
+•	OpenRouter
+          
+If the primary model fails due to timeout or service interruption, the workflow automatically switches to the fallback model.
+This significantly improves workflow reliability.
+________________________________________
+Step 5: Human-in-the-Loop Approval
+Before publication, the generated newsletter is emailed to the editor for review.
+The workflow pauses while waiting for the editor’s decision.
+The editor has two options:
+•	Approve
+•	Reject
+This introduces human oversight into the automated publishing process.
+ 
+________________________________________
+Step 6: Newsletter Distribution
+If the newsletter is approved:
+•	The workflow automatically emails the newsletter to all subscribers.
+If the newsletter is rejected:
+•	Distribution stops immediately.
+•	No newsletter is sent.
+This ensures that only verified content reaches readers.
+ 
+________________________________________
+6. Workflow 3 – Error Management Workflow
+ 
+6.1 Purpose
+The Error Management Workflow monitors failures occurring throughout the AI workflows and provides intelligent diagnostics.
+Instead of merely logging an error, the workflow analyzes the problem and recommends corrective actions.
+________________________________________
+6.2 Workflow Process
+Error Detection
+Whenever an AI Agent or workflow encounters an exception, the Error Workflow is triggered automatically.
+ 
+________________________________________
+AI Error Analysis
+The Error Analysis AI examines the error and generates:
+•	Error description
+•	Root cause
+•	Severity level
+•	Recommended solution
+•	Preventive measures
+•	Confidence level
+This enables developers to troubleshoot issues more efficiently.
+ 
+________________________________________
+Developer Notification
+After analysis, the workflow automatically sends an email to the developer containing:
+•	Workflow name
+•	Failed AI agent
+•	Error details
+•	Root cause
+•	Recommended solution
+•	Prevention strategy
+This minimizes downtime and accelerates issue resolution.
+ 
+________________________________________
+7. Artificial Intelligence Architecture
+The system uses specialized AI agents, each responsible for a distinct function.
+AI Agent	Responsibility
+Data Cleaning Agent	Cleans raw news content and extracts structured information
+Chief Editor Agent	Merges summaries, removes duplicates, and generates personalized HTML newsletters
+Error Analysis Agent	Diagnoses workflow failures and recommends solutions
+This modular AI architecture improves scalability, maintainability, and overall system performance.
+________________________________________
+8. Technologies Used
+Technology	Purpose
+n8n	Workflow orchestration and automation
+HTTP Request Nodes	Collect news from online sources
+Google Sheets	Central data storage and workflow trigger
+Mistral Cloud	Primary AI language model
+OpenRouter	AI fallback model
+Gmail	Newsletter approval and email distribution
+AI Memory	Maintains context during newsletter generation
+JSON	Standardized data exchange
+________________________________________
+9. Key Features
+The system provides:
+•	Automated news collection from multiple sources.
+•	Parallel processing of news websites.
+•	AI-powered data cleaning and summarization.
+•	Structured data storage.
+•	Audience-focused newsletter generation.
+•	HTML email formatting.
+•	Human approval before publication.
+•	Automatic newsletter distribution.
+•	AI model fallback for improved reliability.
+•	Intelligent error diagnosis and recommendations.
+________________________________________
+10. Improvements Over the Previous Project
+Compared to the previous implementation, this capstone introduces several significant enhancements:
+•	Three independent workflows instead of a single workflow.
+•	Parallel processing of multiple news sources.
+•	Dedicated AI agent for each news source.
+•	Automatic storage of structured news summaries.
+•	AI-based grouping and merging of related stories.
+•	Professional HTML newsletter generation.
+•	Human-in-the-Loop editorial approval.
+•	Automated email distribution after approval.
+•	AI model fallback for improved fault tolerance.
+•	Intelligent AI-powered error diagnosis and solution recommendations.
+________________________________________
+11. Benefits of the System
+The proposed solution offers several advantages:
+•	Reduces manual news collection.
+•	Improves consistency of extracted information.
+•	Generates high-quality newsletters automatically.
+•	Enhances audience engagement through personalized content.
+•	Improves workflow reliability.
+•	Reduces developer troubleshooting time.
+•	Supports future scalability through modular workflow design.
+________________________________________
+12. Future Enhancements
+Potential improvements include:
+•	Integration with additional news sources.
+•	Multi-language newsletter generation.
+•	Real-time news monitoring.
+•	AI-based sentiment analysis.
+•	Automatic topic categorization.
+•	Analytics dashboard for newsletter performance.
+•	Integration with mobile applications.
+________________________________________
+13. Conclusion
+The AI-Powered Intelligent News Aggregation, Personalization and Error Management System demonstrates how workflow automation and Artificial Intelligence can be combined to build a scalable, intelligent, and resilient news processing platform.
+By separating the solution into dedicated workflows for data extraction, editorial processing, and error management, the system significantly improves automation, maintainability, and fault tolerance compared to the previous implementation.
+The introduction of Human-in-the-Loop approval, AI model fallback, contextual memory, HTML newsletter generation, and intelligent error diagnosis makes the platform suitable for real-world newsroom and content management applications. The project reduces manual effort, enhances content quality, and provides a reliable end-to-end solution for automated newsletter production.
