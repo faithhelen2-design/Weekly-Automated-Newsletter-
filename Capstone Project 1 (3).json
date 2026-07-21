@@ -1,0 +1,1465 @@
+{
+  "name": "Capstone Project 1",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                5
+              ],
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1136,
+        2256
+      ],
+      "id": "c0d970fc-baaa-470e-9489-c0adf1e7576d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://www.standardmedia.co.ke/rss/politics.php",
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -912,
+        2656
+      ],
+      "id": "21c3f8f0-4e5d-4741-8181-c1e25e6ecb75",
+      "name": "Standard Media"
+    },
+    {
+      "parameters": {
+        "url": "https://smartfarmerkenya.com/feed/?v=25bc6654798e",
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -912,
+        1056
+      ],
+      "id": "ad2ee649-ee27-4f97-afc0-53da863ead8b",
+      "name": "Smart Farmer"
+    },
+    {
+      "parameters": {
+        "url": "https://nation.africa/kenya/rss.xml",
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -912,
+        1856
+      ],
+      "id": "9aa0cd76-f62f-4cc0-a623-38fb76340206",
+      "name": "Nation Africa"
+    },
+    {
+      "parameters": {
+        "url": "https://techcabal.com/feed/",
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -912,
+        3456
+      ],
+      "id": "912a8039-f9ca-41c1-b2eb-2aa36147eb63",
+      "name": "Techcabal"
+    },
+    {
+      "parameters": {
+        "url": "https://techweez.com/feed/",
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -912,
+        4416
+      ],
+      "id": "acd17df6-0199-4877-8926-2c0f5e58bee1",
+      "name": "Tech Weez"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract the single most important agriculture headline from the following raw HTML/JSON: {{ $json.data }}.\n\nInstructions:\n1. Extract the exact title (headline) of the article.\n2. Write the summary as continuous text (not bullet points, lists, or JSON) in **2 concise paragraphs**. The summary should explain the main events, key facts, and any important context.\n3. Write a final paragraph explaining why the story is significant and its potential impact on the agriculture industry, businesses, or consumers.\n4. Return the output in the following format only:\n\nTitle: <exact article title>\n\nSummary:\n<Paragraph 1>\n\n<Paragraph 2>",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -592,
+        0
+      ],
+      "id": "3ad59b85-13dd-425b-886c-25f964561748",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -432,
+        224
+      ],
+      "id": "34513c44-600c-4fe7-844b-38759f7680c7",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"source\": \"Name\",\n  \"headline\": \"Exact article title\",\n  \"summary\": \"First paragraph.\\n\\nSecond paragraph.\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        224
+      ],
+      "id": "12ea43f4-ad71-4226-a6b4-3326689b233e",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract the single most important political headline from the following raw HTML/JSON: {{ $json.data }}.\n\nInstructions:\n1. Extract the exact title (headline) of the article.\n2. Write the summary as continuous text (not bullet points, lists, or JSON) in **2 concise paragraphs**. The summary should explain the main events, key facts, and any important context.\n3. Write a final paragraph explaining why the story is significant and its potential impact on the political scene, businesses, or consumers.\n4. Return the output in the following format only:\n\nTitle: <exact article title>\n\nSummary:\n<Paragraph 1>\n\n<Paragraph 2>",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -592,
+        2400
+      ],
+      "id": "8eabaa5b-9ef4-4cdf-a882-d6eb8827cfdd",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -432,
+        2624
+      ],
+      "id": "668adb28-4598-40d6-ac43-ed71f1db7c44",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"source\": \"Name\",\n  \"headline\": \"Exact article title\",\n  \"summary\": \"First paragraph.\\n\\nSecond paragraph.\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        2624
+      ],
+      "id": "914890b6-e4cf-4da8-afbd-cf4a24680962",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract the single most important agriculture headline from the following raw HTML/JSON: {{ $json.data }}.\n\nInstructions:\n1. Extract the exact title (headline) of the article.\n2. Write the summary as continuous text (not bullet points, lists, or JSON) in **2 concise paragraphs**. The summary should explain the main events, key facts, and any important context.\n3. Write a final paragraph explaining why the story is significant and its potential impact on the agriculture industry, businesses, or consumers.\n4. Return the output in the following format only:\n\nTitle: <exact article title>\n\nSummary:\n<Paragraph 1>\n\n<Paragraph 2>",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -592,
+        800
+      ],
+      "id": "b56d4e26-12b7-4ec5-9c05-d9172c4a34cf",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -432,
+        1024
+      ],
+      "id": "0f365f29-c7fd-4ee1-93f1-54719ef35cce",
+      "name": "Simple Memory3"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"source\": \"Name\",\n  \"headline\": \"Exact article title\",\n  \"summary\": \"First paragraph.\\n\\nSecond paragraph.\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        1024
+      ],
+      "id": "ea9edf7a-e918-4bcd-8557-0d0fc577207a",
+      "name": "Structured Output Parser3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract the single most important tech headline from the following raw HTML/JSON: {{ $json.data }}.\n\nInstructions:\n1. Extract the exact title (headline) of the article.\n2. Write the summary as continuous text (not bullet points, lists, or JSON) in **2 concise paragraphs**. The summary should explain the main events, key facts, and any important context.\n3. Write a final paragraph explaining why the story is significant and its potential impact on the tech industry, businesses, or consumers.\n4. Return the output in the following format only:\n\nTitle: <exact article title>\n\nSummary:\n<Paragraph 1>\n\n<Paragraph 2>",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -592,
+        3200
+      ],
+      "id": "403e7f96-fbb8-4293-beb6-0d10892c384a",
+      "name": "AI Agent3"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -432,
+        3424
+      ],
+      "id": "3cff5e9c-f1eb-479e-904b-5af1be0dff47",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"source\": \"Name\",\n  \"headline\": \"Exact article title\",\n  \"summary\": \"First paragraph.\\n\\nSecond paragraph.\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        3424
+      ],
+      "id": "dc00e16f-5238-4a99-b904-ff0c31470b18",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract the single most important political headline from the following raw HTML/JSON: {{ $json.data }}.\n\nInstructions:\n1. Extract the exact title (headline) of the article.\n2. Write the summary as continuous text (not bullet points, lists, or JSON) in **2 concise paragraphs**. The summary should explain the main events, key facts, and any important context.\n3. Write a final paragraph explaining why the story is significant and its potential impact on the political scene, businesses, or consumers.\n4. Return the output in the following format only:\n\nTitle: <exact article title>\n\nSummary:\n<Paragraph 1>\n\n<Paragraph 2>",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -592,
+        1600
+      ],
+      "id": "e94921ca-35f4-4b12-8091-ec148b78acbc",
+      "name": "AI Agent4"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -432,
+        1824
+      ],
+      "id": "ad311b93-4d2a-484f-bd42-fed8d433d8f8",
+      "name": "Simple Memory4"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"source\": \"Name\",\n  \"headline\": \"Exact article title\",\n  \"summary\": \"First paragraph.\\n\\nSecond paragraph.\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        1824
+      ],
+      "id": "e15bffc3-021f-4239-af7e-e349686acf35",
+      "name": "Structured Output Parser4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract the single most important tech headline from the following raw HTML/JSON: {{ $json.data }}.\n\nInstructions:\n1. Extract the exact title (headline) of the article.\n2. Write the summary as continuous text (not bullet points, lists, or JSON) in **2 concise paragraphs**. The summary should explain the main events, key facts, and any important context.\n3. Write a final paragraph explaining why the story is significant and its potential impact on the tech industry, businesses, or consumers.\n4. Return the output in the following format only:\n\nTitle: <exact article title>\n\nSummary:\n<Paragraph 1>\n\n<Paragraph 2>",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -592,
+        4000
+      ],
+      "id": "3bed7ccf-51f2-42bc-9b70-472ba03d65b4",
+      "name": "AI Agent5"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -432,
+        4224
+      ],
+      "id": "0b02be82-172e-4a8e-ab81-0f1e2bfeec93",
+      "name": "Simple Memory5"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"source\": \"Name\",\n  \"headline\": \"Exact article title\",\n  \"summary\": \"First paragraph.\\n\\nSecond paragraph.\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        4224
+      ],
+      "id": "79800f19-3a13-4ee2-9831-f6b3fdd476cf",
+      "name": "Structured Output Parser5"
+    },
+    {
+      "parameters": {
+        "numberInputs": 6
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        64,
+        1296
+      ],
+      "id": "fb4e2b26-eeba-4d77-9706-0ab8e45280f2",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        224
+      ],
+      "id": "3c27642d-9edb-469d-a9a8-9788d946b691",
+      "name": "Mistral Cloud Chat Model",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "70h9OtMpY7R3gEfX",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        224
+      ],
+      "id": "cc1c4f43-8379-4dda-8934-9068bd114db8",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        432
+      ],
+      "id": "0bd6a85b-d01d-4074-91c9-308838be2128",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        1024
+      ],
+      "id": "6e36ff9d-fabb-4d14-9344-cf0485043778",
+      "name": "Mistral Cloud Chat Model3",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "70h9OtMpY7R3gEfX",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        1024
+      ],
+      "id": "278b6f5c-f272-46de-ae5f-cff1b403eed3",
+      "name": "OpenRouter Chat Model6",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        1232
+      ],
+      "id": "dae1e0f5-3049-40b8-a82a-34cdca6cd598",
+      "name": "OpenRouter Chat Model4",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        1824
+      ],
+      "id": "10d49b78-e1bc-4d22-a6cb-4c81c64caf84",
+      "name": "Mistral Cloud Chat Model4",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "70h9OtMpY7R3gEfX",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        1824
+      ],
+      "id": "4f146af6-851a-404c-a8e6-fe8e877eb16a",
+      "name": "OpenRouter Chat Model7",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        2032
+      ],
+      "id": "1c7599fe-602e-49ce-a9b8-202f693477e0",
+      "name": "OpenRouter Chat Model8",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        2624
+      ],
+      "id": "acd32315-532f-4403-9845-d532254348fb",
+      "name": "Mistral Cloud Chat Model1",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "70h9OtMpY7R3gEfX",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        2624
+      ],
+      "id": "82b84907-1d1a-4eaa-b097-dfc41d7ace23",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        2832
+      ],
+      "id": "2a4976cd-095e-48bf-b494-038acec98b79",
+      "name": "OpenRouter Chat Model5",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        3424
+      ],
+      "id": "ece148be-460a-43fd-9fe4-80765d547606",
+      "name": "Mistral Cloud Chat Model2",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "70h9OtMpY7R3gEfX",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        3424
+      ],
+      "id": "50e2573a-be25-4c74-b971-f26bfd1a6f15",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        3632
+      ],
+      "id": "8da139fd-bce8-4094-a524-c99809304aa5",
+      "name": "OpenRouter Chat Model9",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        4224
+      ],
+      "id": "b9bb1a69-7708-4e2c-b5cd-f76e63e94550",
+      "name": "Mistral Cloud Chat Model5",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "70h9OtMpY7R3gEfX",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        4224
+      ],
+      "id": "33a15509-cf87-42fb-95f4-d0c4e4364d82",
+      "name": "OpenRouter Chat Model10",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        4432
+      ],
+      "id": "b6020ccc-bfad-4a7a-aaf2-de235d71c970",
+      "name": "OpenRouter Chat Model11",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Ciedt9DX6Q06V8GEphHd2prp5HjSCEk2FDOxecCSdcY/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ciedt9DX6Q06V8GEphHd2prp5HjSCEk2FDOxecCSdcY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Source": "={{ $json.summaries[0].output.source }} \n\n{{ $json.summaries[1].output.source }} \n\n{{ $json.summaries[2].output.source }}\n\n{{ $json.summaries[3].output.source }}\n\n{{ $json.summaries[4].output.source }}\n\n{{ $json.summaries[5].output.source }}\n\n",
+            "Headline": "={{ $json.summaries[5].output.headline }}\n\n{{ $json.summaries[4].output.headline }}\n\n{{ $json.summaries[3].output.headline }}\n\n{{ $json.summaries[2].output.headline }}\n\n{{ $json.summaries[1].output.headline }}\n\n{{ $json.summaries[0].output.headline }}",
+            "Summary": "={{ $json.summaries[0].output.summary }}\n\n{{ $json.summaries[1].output.summary }}\n\n{{ $json.summaries[2].output.summary }}\n\n{{ $json.summaries[3].output.summary }}\n\n{{ $json.summaries[4].output.summary }}\n\n{{ $json.summaries[5].output.summary }}\n\n",
+            "Date": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Headline",
+              "displayName": "Headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        512,
+        1360
+      ],
+      "id": "bf0febce-5951-426f-a24f-3e0be0c0291c",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "yZyj6GHp9k6H72Hv",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://kilimonews.co.ke/",
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -912,
+        256
+      ],
+      "id": "1f7bc12e-c5db-48c0-b74e-41dc81d0f723",
+      "name": "kilimo news"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "summaries",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        288,
+        1360
+      ],
+      "id": "c3876fcc-a23f-4a06-a89b-5ca1cba75ccf",
+      "name": "Aggregate"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Standard Media",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Nation Africa",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Smart Farmer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Techcabal",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tech Weez",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "kilimo news",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Smart Farmer": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Standard Media": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Nation Africa": {
+      "main": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Techcabal": {
+      "main": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Tech Weez": {
+      "main": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory4": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser4": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory5": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser5": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent5": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "AI Agent4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ],
+        []
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        []
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ],
+        []
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ],
+        []
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 5
+          }
+        ],
+        []
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser4",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model9": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model10": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model11": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser5",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "kilimo news": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "yXMfavx0OeQphNjQ",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1
+  },
+  "versionId": "f078b6bb-7fc3-4112-841f-f5d28a653505",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ed40356dc18d2fd219bef530bfaa226a17623d466bca2fef19f39a6a2ffb15c4"
+  },
+  "nodeGroups": [],
+  "id": "UIIzA8Tx2tS4my12",
+  "tags": []
+}
