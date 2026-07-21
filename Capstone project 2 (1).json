@@ -1,0 +1,431 @@
+{
+  "name": "Capstone project 2",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1Ciedt9DX6Q06V8GEphHd2prp5HjSCEk2FDOxecCSdcY",
+          "mode": "list",
+          "cachedResultName": "Newsletter spreadsheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ciedt9DX6Q06V8GEphHd2prp5HjSCEk2FDOxecCSdcY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ciedt9DX6Q06V8GEphHd2prp5HjSCEk2FDOxecCSdcY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4facd6e5-dca4-43bb-ac9c-c63e492452d5",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "P2WQpD3ycW0QA2Ee",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\nYour task is to:\n\n1. Read every; {{ $json.Summary }} .\n2. Group all summaries by their; {{ $json.Headline }}.\n3. Combine all summaries that belong to the same Topic into a single comprehensive summary.\n4. Remove duplicate or repetitive information while preserving all unique and important details.\n5. Keep each Topic separate—do not merge different topics together.\n6. Maintain a logical flow by organizing the combined summary into clear paragraphs or bullet points.\n7. Output the results in the following format:\n\nTopic: <Topic Name>\nCombined Summary:\n<Single merged summary containing all information for this topic>\n\n--------------------------------------------------\n\nTopic: <Next Topic Name>\nCombined Summary:\n<Single merged summary containing all information for this topic>\n\nContinue until every topic in the sheet has been processed.\n\nImportant:\n- Do not omit any unique information.\n- Do not create new facts or opinions.\n- Ensure each topic appears only once in the final output.\n- Use clear, concise, and well-structured language.",
+        "needsFallback": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "8199c7c9-c2e3-44ee-b2a5-f37e4a769a75",
+      "name": "AI Agent",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 2000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        64,
+        208
+      ],
+      "id": "ca10bc54-9fda-467c-b8cb-07c1d2f982d3",
+      "name": "Mistral Cloud Chat Model",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "70h9OtMpY7R3gEfX",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 2000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        208,
+        176
+      ],
+      "id": "3bfca8d0-a2c7-49da-a64b-600b3e0ba8d9",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        336,
+        208
+      ],
+      "id": "4f2612c5-5df0-495e-9498-41bb4faa046a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "pm2530273@gmail.com",
+        "subject": "newsletter approval",
+        "message": "={{ $json.output }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        -16
+      ],
+      "id": "ab91d912-ba75-4a77-a0f7-9ce1b4069a69",
+      "name": "Send message and wait for response",
+      "webhookId": "9d7dd9af-84c1-4b9b-b14e-87a7efaddf87",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JTm676SxC2ltaW1E",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        -16
+      ],
+      "id": "849f7ac4-8878-4131-83df-7653fece2efc",
+      "name": "Wait",
+      "webhookId": "125ebc07-1cc9-4d86-98cf-04b4044b498f"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://moringa-projects.app.n8n.cloud/webhook-test/Error Alert",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "Error",
+              "value": "={{ $json.error }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        544,
+        192
+      ],
+      "id": "253f9753-c050-418a-a0e9-cd87c27d04e2",
+      "name": "HTTP Request",
+      "alwaysOutputData": true,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Source; {{ $('Google Sheets Trigger').item.json.Source }}\n1. Read every; {{ $('Google Sheets Trigger').item.json.Summary }}\n2. Group all summaries by their;{{ $('Google Sheets Trigger').item.json.Summary }} .\n3. Combine all summaries that belong to the same Topic into a single comprehensive summary.\n4. Remove duplicate or repetitive information while preserving all unique and important details.\n5. Keep each Topic separate—do not merge different topics together.\n6. Maintain a logical flow by organizing the combined summary into clear paragraphs or bullet points.\n7. Output the results using the following HTML structure for each topic (Do not use markdown blocks like ```html, just output the raw HTML tags directly):\n\n<pre style=\"background-color: #272822; color: #f8f8f2; padding: 18px; border-radius: 6px; font-family: 'Courier New', Courier, monospace; font-size: 14px; overflow-x: auto; line-height: 1.6; border-left: 4px solid #a6e22e; text-align: justify; margin-bottom: 20px;\"><code style=\"color: inherit;\"><span style=\"color: #f92672;\">Source:</span>   <span style=\"color: #66d9ef;\">[Insert Source Name Here]</span>\n<span style=\"color: #f92672;\">Headline:</span> <span style=\"color: #e6db74;\">\"[Insert Topic/Headline Name Here]\"</span>\n\n<span style=\"color: #f92672;\">Summary:</span>\n<span style=\"color: #f8f8f2;\">[Insert the comprehensive merged summary here. Keep paragraphs separated by double line breaks if needed.]</span></code></pre>\n\nRepeat this full HTML block structure for every single topic processed. \n\nImportant:\n- Do not omit any unique information.\n- Do not create new facts or opinions.\n- Ensure each topic appears only once in the final output.\n- Use clear, concise, and well-structured language.\n- Output ONLY the valid HTML code, without any extra conversation, introductory text, or markdown code blocks.",
+        "needsFallback": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1088,
+        -16
+      ],
+      "id": "7b8a7fcb-937a-43b6-8173-aca2d0f11af1",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 2000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        944,
+        192
+      ],
+      "id": "b7f6c853-611a-493c-95c7-94a440bf36bf",
+      "name": "Mistral Cloud Chat Model1",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "70h9OtMpY7R3gEfX",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        288
+      ],
+      "id": "ca8f69e5-3431-4156-bbac-1fa85691db4f",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "xQ4SJNmyKC9Metel",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $now }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        1136,
+        192
+      ],
+      "id": "7f0e8685-4fc0-46d7-8161-769b4804694b",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "sendTo": "=pm2530273@gmail.com ,ian.kariuki2@student.moringaschool.com ,billoa42ccf@gmail.com ,keegan.weke@student.moringaschool.com",
+        "subject": "Newsletter",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        -16
+      ],
+      "id": "439bf059-82ca-428c-8a26-4ba855130f95",
+      "name": "Send a message",
+      "webhookId": "3bace90d-a433-4fbf-9a33-43003335295c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JTm676SxC2ltaW1E",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "45e8ae23-aa78-4192-92b4-d6dc7df174f8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ed40356dc18d2fd219bef530bfaa226a17623d466bca2fef19f39a6a2ffb15c4"
+  },
+  "nodeGroups": [],
+  "id": "UsXAAFvVVDAiuDQ5",
+  "tags": []
+}
